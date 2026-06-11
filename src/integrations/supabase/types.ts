@@ -219,6 +219,54 @@ export type Database = {
         }
         Relationships: []
       }
+      health_articles: {
+        Row: {
+          author: string | null
+          category: string
+          content: string
+          cover_url: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          is_published: boolean
+          published_at: string
+          read_minutes: number
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author?: string | null
+          category: string
+          content: string
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          is_published?: boolean
+          published_at?: string
+          read_minutes?: number
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string | null
+          category?: string
+          content?: string
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          is_published?: boolean
+          published_at?: string
+          read_minutes?: number
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       hospital_rooms: {
         Row: {
           amenities: string[] | null
@@ -308,6 +356,95 @@ export type Database = {
         }
         Relationships: []
       }
+      lab_bookings: {
+        Row: {
+          address: string
+          created_at: string
+          id: string
+          phone: string | null
+          scheduled_at: string
+          status: string
+          test_id: string
+          total_inr: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          id?: string
+          phone?: string | null
+          scheduled_at: string
+          status?: string
+          test_id: string
+          total_inr: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          id?: string
+          phone?: string | null
+          scheduled_at?: string
+          status?: string
+          test_id?: string
+          total_inr?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lab_bookings_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "lab_tests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lab_tests: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          home_collection: boolean
+          id: string
+          mrp_inr: number
+          name: string
+          preparation: string | null
+          price_inr: number
+          report_time_hours: number
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          home_collection?: boolean
+          id?: string
+          mrp_inr: number
+          name: string
+          preparation?: string | null
+          price_inr: number
+          report_time_hours?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          home_collection?: boolean
+          id?: string
+          mrp_inr?: number
+          name?: string
+          preparation?: string | null
+          price_inr?: number
+          report_time_hours?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       medical_records: {
         Row: {
           description: string | null
@@ -338,6 +475,54 @@ export type Database = {
           record_type?: string
           uploaded_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      medicines: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          generic_name: string | null
+          id: string
+          image_url: string | null
+          manufacturer: string | null
+          mrp_inr: number
+          name: string
+          prescription_required: boolean
+          price_inr: number
+          stock: number
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          generic_name?: string | null
+          id?: string
+          image_url?: string | null
+          manufacturer?: string | null
+          mrp_inr: number
+          name: string
+          prescription_required?: boolean
+          price_inr: number
+          stock?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          generic_name?: string | null
+          id?: string
+          image_url?: string | null
+          manufacturer?: string | null
+          mrp_inr?: number
+          name?: string
+          prescription_required?: boolean
+          price_inr?: number
+          stock?: number
+          updated_at?: string
         }
         Relationships: []
       }
@@ -386,6 +571,114 @@ export type Database = {
           ngo_name?: string
           service_type?: string
           state?: string | null
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          link: string | null
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      pharmacy_order_items: {
+        Row: {
+          created_at: string
+          id: string
+          medicine_id: string
+          order_id: string
+          price_inr: number
+          quantity: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          medicine_id: string
+          order_id: string
+          price_inr: number
+          quantity?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          medicine_id?: string
+          order_id?: string
+          price_inr?: number
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pharmacy_order_items_medicine_id_fkey"
+            columns: ["medicine_id"]
+            isOneToOne: false
+            referencedRelation: "medicines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pharmacy_order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "pharmacy_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pharmacy_orders: {
+        Row: {
+          address: string
+          created_at: string
+          id: string
+          phone: string | null
+          prescription_url: string | null
+          status: string
+          total_inr: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          id?: string
+          phone?: string | null
+          prescription_url?: string | null
+          status?: string
+          total_inr: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          id?: string
+          phone?: string | null
+          prescription_url?: string | null
+          status?: string
+          total_inr?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -508,6 +801,39 @@ export type Database = {
         }
         Relationships: []
       }
+      sos_events: {
+        Row: {
+          address: string | null
+          contacted_at: string | null
+          created_at: string
+          id: string
+          lat: number | null
+          lng: number | null
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          contacted_at?: string | null
+          created_at?: string
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          contacted_at?: string | null
+          created_at?: string
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -525,6 +851,47 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      video_consultations: {
+        Row: {
+          appointment_id: string | null
+          created_at: string
+          ended_at: string | null
+          id: string
+          notes: string | null
+          room_url: string
+          started_at: string | null
+          user_id: string
+        }
+        Insert: {
+          appointment_id?: string | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          notes?: string | null
+          room_url: string
+          started_at?: string | null
+          user_id: string
+        }
+        Update: {
+          appointment_id?: string | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          notes?: string | null
+          room_url?: string
+          started_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_consultations_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

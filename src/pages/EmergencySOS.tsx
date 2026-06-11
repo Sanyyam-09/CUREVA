@@ -11,24 +11,42 @@ const EmergencySOS = () => {
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const { user } = useAuth();
 
+  const logSOS = async (lat?: number, lng?: number) => {
+    try {
+      const { supabase } = await import("@/integrations/supabase/client");
+      await supabase.from("sos_events").insert({
+        user_id: user?.id ?? null,
+        lat: lat ?? null,
+        lng: lng ?? null,
+        status: "triggered",
+      });
+    } catch (e) {
+      console.error("SOS log failed", e);
+    }
+  };
+
   const handleSOS = () => {
     setLocating(true);
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
-          setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+          const lat = pos.coords.latitude, lng = pos.coords.longitude;
+          setLocation({ lat, lng });
           setLocating(false);
           setActivated(true);
+          logSOS(lat, lng);
         },
         () => {
           setLocating(false);
           setActivated(true);
+          logSOS();
         },
         { enableHighAccuracy: true, timeout: 10000 }
       );
     } else {
       setLocating(false);
       setActivated(true);
+      logSOS();
     }
   };
 

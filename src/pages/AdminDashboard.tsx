@@ -83,13 +83,16 @@ const schemeFields: FieldDef[] = [
 ];
 
 const ngoFields: FieldDef[] = [
-  { name: "name", label: "Name", required: true },
+  { name: "ngo_name", label: "Name", required: true },
+  { name: "service_type", label: "Service type", required: true },
   { name: "description", label: "Description", type: "textarea" },
   { name: "city", label: "City" },
-  { name: "service_type", label: "Service type" },
+  { name: "state", label: "State" },
+  { name: "location", label: "Location" },
   { name: "contact_phone", label: "Phone" },
   { name: "contact_email", label: "Email" },
-  { name: "website_url", label: "Website" },
+  { name: "event_date", label: "Event date (YYYY-MM-DD)" },
+  { name: "event_time", label: "Event time" },
   { name: "is_active", label: "Active", type: "boolean" },
 ];
 

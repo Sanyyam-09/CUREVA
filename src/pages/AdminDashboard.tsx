@@ -41,34 +41,44 @@ const doctorsFields: FieldDef[] = [
   { name: "bio", label: "Bio", type: "textarea" },
   { name: "rating", label: "Rating", type: "number" },
   { name: "avatar_url", label: "Avatar URL" },
-  { name: "verified", label: "Verified", type: "boolean" },
+  { name: "certificate_verified", label: "Verified", type: "boolean" },
 ];
 
 const hospitalsFields: FieldDef[] = [
   { name: "name", label: "Name", required: true },
   { name: "city", label: "City" },
-  { name: "address", label: "Address", type: "textarea" },
-  { name: "phone", label: "Phone" },
+  { name: "state", label: "State" },
+  { name: "location", label: "Location/Address" },
+  { name: "accreditation", label: "Accreditation" },
+  { name: "description", label: "Description", type: "textarea" },
+  { name: "image_url", label: "Image URL" },
   { name: "rating", label: "Rating", type: "number" },
-  { name: "beds", label: "Beds", type: "number" },
-  { name: "specialties", label: "Specialties (comma)" },
+  { name: "trust_score", label: "Trust score", type: "number" },
+  { name: "certificate_verified", label: "Verified", type: "boolean" },
 ];
 
 const pricingFields: FieldDef[] = [
   { name: "procedure_name", label: "Procedure name", required: true },
-  { name: "hospital_name", label: "Hospital name" },
-  { name: "city", label: "City" },
-  { name: "price_inr", label: "Price (₹)", type: "number" },
+  { name: "hospital_id", label: "Hospital ID (uuid)", required: true },
   { name: "category", label: "Category" },
+  { name: "base_price", label: "Base price (₹)", type: "number", required: true },
+  { name: "surgeon_fee", label: "Surgeon fee (₹)", type: "number" },
+  { name: "anesthesia_fee", label: "Anesthesia fee (₹)", type: "number" },
+  { name: "room_charges", label: "Room charges (₹)", type: "number" },
+  { name: "nursing_charges", label: "Nursing charges (₹)", type: "number" },
+  { name: "medicine_cost", label: "Medicine cost (₹)", type: "number" },
+  { name: "misc_charges", label: "Misc charges (₹)", type: "number" },
+  { name: "total_estimate", label: "Total estimate (₹)", type: "number", required: true },
+  { name: "notes", label: "Notes", type: "textarea" },
 ];
 
 const schemeFields: FieldDef[] = [
   { name: "name", label: "Name", required: true },
   { name: "description", label: "Description", type: "textarea" },
-  { name: "eligibility", label: "Eligibility", type: "textarea" },
+  { name: "eligibility_criteria", label: "Eligibility", type: "textarea" },
+  { name: "benefits", label: "Benefits", type: "textarea" },
   { name: "coverage_amount", label: "Coverage (₹)", type: "number" },
-  { name: "category", label: "Category" },
-  { name: "apply_url", label: "Apply URL" },
+  { name: "website_url", label: "Website URL" },
   { name: "is_active", label: "Active", type: "boolean" },
 ];
 

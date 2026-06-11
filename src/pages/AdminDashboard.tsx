@@ -198,13 +198,13 @@ const AdminDashboard = () => {
       case "doctors": return <ResourceManager table="doctors" title="Doctors" fields={doctorsFields}
         columns={[{ key: "name", label: "Name" }, { key: "specialty", label: "Specialty" }, { key: "city", label: "City" }, { key: "consultation_fee", label: "Fee" }]} />;
       case "hospitals": return <ResourceManager table="hospitals" title="Hospitals" fields={hospitalsFields}
-        columns={[{ key: "name", label: "Name" }, { key: "city", label: "City" }, { key: "rating", label: "Rating" }, { key: "beds", label: "Beds" }]} />;
+        columns={[{ key: "name", label: "Name" }, { key: "city", label: "City" }, { key: "rating", label: "Rating" }, { key: "trust_score", label: "Trust" }]} />;
       case "pricing": return <ResourceManager table="procedure_pricing" title="Procedure Pricing" fields={pricingFields}
-        columns={[{ key: "procedure_name", label: "Procedure" }, { key: "hospital_name", label: "Hospital" }, { key: "city", label: "City" }, { key: "price_inr", label: "Price" }]} />;
+        columns={[{ key: "procedure_name", label: "Procedure" }, { key: "category", label: "Category" }, { key: "base_price", label: "Base" }, { key: "total_estimate", label: "Total" }]} />;
       case "schemes": return <ResourceManager table="government_schemes" title="Schemes" fields={schemeFields}
-        columns={[{ key: "name", label: "Name" }, { key: "category", label: "Category" }, { key: "coverage_amount", label: "Coverage" }, { key: "is_active", label: "Active", render: (r) => r.is_active ? "Yes" : "No" }]} />;
+        columns={[{ key: "name", label: "Name" }, { key: "coverage_amount", label: "Coverage" }, { key: "is_active", label: "Active", render: (r) => r.is_active ? "Yes" : "No" }]} />;
       case "ngos": return <ResourceManager table="ngo_services" title="NGOs" fields={ngoFields}
-        columns={[{ key: "name", label: "Name" }, { key: "city", label: "City" }, { key: "service_type", label: "Service" }, { key: "is_active", label: "Active", render: (r) => r.is_active ? "Yes" : "No" }]} />;
+        columns={[{ key: "ngo_name", label: "Name" }, { key: "city", label: "City" }, { key: "service_type", label: "Service" }, { key: "is_active", label: "Active", render: (r) => r.is_active ? "Yes" : "No" }]} />;
       case "medicines": return <ResourceManager table="medicines" title="Medicines" fields={medicineFields}
         columns={[{ key: "name", label: "Name" }, { key: "category", label: "Category" }, { key: "price_inr", label: "Price" }, { key: "stock", label: "Stock" }]} />;
       case "labtests": return <ResourceManager table="lab_tests" title="Lab Tests" fields={labTestFields}

@@ -27,13 +27,21 @@ const BookAppointment = () => {
   const [timeSlot, setTimeSlot] = useState("");
   const [appointments, setAppointments] = useState<any[]>([]);
   const [confirmed, setConfirmed] = useState(false);
+  const [booking, setBooking] = useState(false);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const { toast } = useToast();
   const t = useTranslation();
 
   useEffect(() => {
-    supabase.from("doctors").select("*").order("name").then(({ data }) => {
-      if (data) setDoctors(data);
+    supabase.from("doctors").select("*").order("name").then(({ data, error }) => {
+      if (error) toast({ title: "Failed to load doctors", description: error.message, variant: "destructive" });
+      if (data) {
+        setDoctors(data);
+        const preset = searchParams.get("doctor");
+        if (preset && data.find((d) => d.id === preset)) setSelectedDoctor(preset);
+      }
     });
     if (user) fetchAppointments();
   }, [user]);

@@ -153,7 +153,7 @@ const DoctorSearch = () => {
                             ))}
                           </div>
                           <Textarea placeholder="Share your experience..." value={newReview.text} onChange={(e) => setNewReview((r) => ({ ...r, text: e.target.value }))} />
-                          <Button size="sm" onClick={() => submitReview(doc.id)}>Submit Review</Button>
+                          <Button size="sm" onClick={() => submitReview(doc.id)} disabled={submittingReview}>{submittingReview ? "Submitting..." : "Submit Review"}</Button>
                         </div>
                       )}
                       {/* Reviews list */}

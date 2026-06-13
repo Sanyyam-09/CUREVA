@@ -63,7 +63,7 @@ const DoctorRegister = () => {
     // 2. Insert doctor profile
     if (authData.user) {
       const initials = form.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
-      await supabase.from("doctors").insert({
+      const { error: docErr } = await supabase.from("doctors").insert({
         name: form.name,
         specialty: form.specialty,
         qualification: form.qualification,
@@ -77,9 +77,19 @@ const DoctorRegister = () => {
         certificate_verified: false,
         trust_score: 50,
       });
+      if (docErr) {
+        setLoading(false);
+        toast({ title: "Doctor profile failed", description: docErr.message, variant: "destructive" });
+        return;
+      }
 
       // 3. Add doctor role
-      await supabase.from("user_roles").insert({ user_id: authData.user.id, role: "doctor" as const });
+      const { error: roleErr } = await supabase.from("user_roles").insert({ user_id: authData.user.id, role: "doctor" as const });
+      if (roleErr) {
+        setLoading(false);
+        toast({ title: "Couldn't assign doctor role", description: roleErr.message, variant: "destructive" });
+        return;
+      }
     }
 
     setLoading(false);

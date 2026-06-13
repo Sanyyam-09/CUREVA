@@ -18,7 +18,21 @@ const Navbar = () => {
   const { user, signOut } = useAuth();
   const t = useTranslation();
   const location = useLocation();
+  const { toast } = useToast();
+  const [signingOut, setSigningOut] = useState(false);
   const [profile, setProfile] = useState<{ avatar_url: string | null; full_name: string | null } | null>(null);
+
+  const handleSignOut = async () => {
+    setSigningOut(true);
+    try {
+      await signOut();
+      toast({ title: "Signed out" });
+    } catch (e: any) {
+      toast({ title: "Sign out failed", description: e?.message, variant: "destructive" });
+    }
+    setSigningOut(false);
+    setMobileOpen(false);
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);

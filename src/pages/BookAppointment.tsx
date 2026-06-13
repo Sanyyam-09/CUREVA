@@ -61,31 +61,37 @@ const BookAppointment = () => {
     if (!selectedDoctor || !date || !timeSlot) {
       toast({ title: "Please fill all fields", variant: "destructive" }); return;
     }
+    setBooking(true);
     const { error } = await supabase.from("appointments").insert({
       patient_id: user.id,
       doctor_id: selectedDoctor,
       appointment_date: format(date, "yyyy-MM-dd"),
       time_slot: timeSlot,
     });
+    setBooking(false);
     if (error) { toast({ title: "Booking failed", description: error.message, variant: "destructive" }); return; }
+    toast({ title: "Appointment booked!", description: `${format(date, "PPP")} at ${timeSlot}` });
     setConfirmed(true);
     fetchAppointments();
     setTimeout(() => { setConfirmed(false); setSelectedDoctor(""); setDate(undefined); setTimeSlot(""); }, 3000);
   };
 
   const handleCancel = async (id: string) => {
+    setCancellingId(id);
     const { error } = await supabase.from("appointments").update({ status: "cancelled" }).eq("id", id);
-    if (error) { toast({ title: "Failed to cancel", variant: "destructive" }); return; }
+    setCancellingId(null);
+    if (error) { toast({ title: "Failed to cancel", description: error.message, variant: "destructive" }); return; }
     toast({ title: "Appointment cancelled" });
     fetchAppointments();
   };
 
-  const handleReschedule = (apt: any) => {
+  const handleReschedule = async (apt: any) => {
     setSelectedDoctor(apt.doctor_id);
     setDate(undefined);
     setTimeSlot("");
-    // Update old appointment status
-    supabase.from("appointments").update({ status: "rescheduled" }).eq("id", apt.id).then(() => fetchAppointments());
+    const { error } = await supabase.from("appointments").update({ status: "rescheduled" }).eq("id", apt.id);
+    if (error) { toast({ title: "Failed to mark for reschedule", description: error.message, variant: "destructive" }); return; }
+    fetchAppointments();
     toast({ title: "Select a new date and time to reschedule" });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };

@@ -131,11 +131,12 @@ const MedicalRecords = () => {
                 <p className="text-xs text-muted-foreground">{record.record_type} · {new Date(record.uploaded_at).toLocaleDateString()}</p>
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" className="gap-1" onClick={() => handleView(record)}>
-                  <ExternalLink className="h-3.5 w-3.5" />{t("records.view")}
+                <Button variant="outline" size="sm" className="gap-1" onClick={() => handleView(record)} disabled={viewingId === record.id}>
+                  {viewingId === record.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ExternalLink className="h-3.5 w-3.5" />}
+                  {t("records.view")}
                 </Button>
-                <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => handleDelete(record)}>
-                  <Trash2 className="h-4 w-4" />
+                <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => handleDelete(record)} disabled={deletingId === record.id}>
+                  {deletingId === record.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                 </Button>
               </div>
             </div>

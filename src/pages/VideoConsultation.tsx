@@ -21,6 +21,7 @@ const VideoConsultation = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeRoom, setActiveRoom] = useState<{ url: string; appointmentId: string } | null>(null);
+  const [joiningId, setJoiningId] = useState<string | null>(null);
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -41,21 +42,31 @@ const VideoConsultation = () => {
 
   const joinCall = async (apt: Appointment) => {
     if (!user) return;
+    setJoiningId(apt.id);
     const roomName = `cureva-${apt.id}`;
     const url = `https://meet.jit.si/${roomName}`;
-    setActiveRoom({ url, appointmentId: apt.id });
-    await supabase.from("video_consultations").insert({
+    const { error } = await supabase.from("video_consultations").insert({
       appointment_id: apt.id,
       user_id: user.id,
       room_url: url,
       started_at: new Date().toISOString(),
     });
+    setJoiningId(null);
+    if (error) {
+      toast({ title: "Couldn't log consultation", description: error.message, variant: "destructive" });
+      // still open room so doctor/patient can talk
+    } else {
+      toast({ title: "Joining call..." });
+    }
+    setActiveRoom({ url, appointmentId: apt.id });
   };
 
   const endCall = async () => {
     if (activeRoom) {
-      await supabase.from("video_consultations").update({ ended_at: new Date().toISOString() })
+      const { error } = await supabase.from("video_consultations").update({ ended_at: new Date().toISOString() })
         .eq("appointment_id", activeRoom.appointmentId).is("ended_at", null);
+      if (error) toast({ title: "Couldn't log end time", description: error.message, variant: "destructive" });
+      else toast({ title: "Call ended" });
     }
     setActiveRoom(null);
   };
@@ -119,8 +130,9 @@ const VideoConsultation = () => {
                 <h3 className="font-semibold">{apt.doctors?.name || "Doctor"}</h3>
                 <p className="text-xs text-muted-foreground">{apt.doctors?.specialty}</p>
                 <p className="text-sm mt-3">{format(new Date(apt.appointment_date), "PPP")} · {apt.time_slot}</p>
-                <Button className="w-full mt-4 gap-2" onClick={() => joinCall(apt)}>
-                  <Video className="h-4 w-4" />Join call
+                <Button className="w-full mt-4 gap-2" onClick={() => joinCall(apt)} disabled={joiningId === apt.id}>
+                  {joiningId === apt.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Video className="h-4 w-4" />}
+                  {joiningId === apt.id ? "Joining..." : "Join call"}
                 </Button>
               </div>
             ))}

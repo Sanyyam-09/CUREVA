@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { format, addDays } from "date-fns";
-import { CalendarIcon, Clock, CheckCircle2, RefreshCw, XCircle } from "lucide-react";
+import { CalendarIcon, Clock, CheckCircle2, RefreshCw, XCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -26,13 +27,21 @@ const BookAppointment = () => {
   const [timeSlot, setTimeSlot] = useState("");
   const [appointments, setAppointments] = useState<any[]>([]);
   const [confirmed, setConfirmed] = useState(false);
+  const [booking, setBooking] = useState(false);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const { toast } = useToast();
   const t = useTranslation();
 
   useEffect(() => {
-    supabase.from("doctors").select("*").order("name").then(({ data }) => {
-      if (data) setDoctors(data);
+    supabase.from("doctors").select("*").order("name").then(({ data, error }) => {
+      if (error) toast({ title: "Failed to load doctors", description: error.message, variant: "destructive" });
+      if (data) {
+        setDoctors(data);
+        const preset = searchParams.get("doctor");
+        if (preset && data.find((d) => d.id === preset)) setSelectedDoctor(preset);
+      }
     });
     if (user) fetchAppointments();
   }, [user]);
@@ -52,31 +61,37 @@ const BookAppointment = () => {
     if (!selectedDoctor || !date || !timeSlot) {
       toast({ title: "Please fill all fields", variant: "destructive" }); return;
     }
+    setBooking(true);
     const { error } = await supabase.from("appointments").insert({
       patient_id: user.id,
       doctor_id: selectedDoctor,
       appointment_date: format(date, "yyyy-MM-dd"),
       time_slot: timeSlot,
     });
+    setBooking(false);
     if (error) { toast({ title: "Booking failed", description: error.message, variant: "destructive" }); return; }
+    toast({ title: "Appointment booked!", description: `${format(date, "PPP")} at ${timeSlot}` });
     setConfirmed(true);
     fetchAppointments();
     setTimeout(() => { setConfirmed(false); setSelectedDoctor(""); setDate(undefined); setTimeSlot(""); }, 3000);
   };
 
   const handleCancel = async (id: string) => {
+    setCancellingId(id);
     const { error } = await supabase.from("appointments").update({ status: "cancelled" }).eq("id", id);
-    if (error) { toast({ title: "Failed to cancel", variant: "destructive" }); return; }
+    setCancellingId(null);
+    if (error) { toast({ title: "Failed to cancel", description: error.message, variant: "destructive" }); return; }
     toast({ title: "Appointment cancelled" });
     fetchAppointments();
   };
 
-  const handleReschedule = (apt: any) => {
+  const handleReschedule = async (apt: any) => {
     setSelectedDoctor(apt.doctor_id);
     setDate(undefined);
     setTimeSlot("");
-    // Update old appointment status
-    supabase.from("appointments").update({ status: "rescheduled" }).eq("id", apt.id).then(() => fetchAppointments());
+    const { error } = await supabase.from("appointments").update({ status: "rescheduled" }).eq("id", apt.id);
+    if (error) { toast({ title: "Failed to mark for reschedule", description: error.message, variant: "destructive" }); return; }
+    fetchAppointments();
     toast({ title: "Select a new date and time to reschedule" });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -140,7 +155,9 @@ const BookAppointment = () => {
               </div>
             </div>
 
-            <Button className="w-full" size="lg" onClick={handleBook}>{t("booking.confirm")}</Button>
+            <Button className="w-full" size="lg" onClick={handleBook} disabled={booking}>
+              {booking ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Booking...</> : t("booking.confirm")}
+            </Button>
           </div>
         )}
 
@@ -174,8 +191,8 @@ const BookAppointment = () => {
                       <Button size="sm" variant="outline" className="flex-1 gap-1" onClick={() => handleReschedule(apt)}>
                         <RefreshCw className="h-3 w-3" /> Reschedule
                       </Button>
-                      <Button size="sm" variant="outline" className="flex-1 gap-1 text-destructive hover:text-destructive" onClick={() => handleCancel(apt.id)}>
-                        <XCircle className="h-3 w-3" /> Cancel
+                      <Button size="sm" variant="outline" className="flex-1 gap-1 text-destructive hover:text-destructive" disabled={cancellingId === apt.id} onClick={() => handleCancel(apt.id)}>
+                        {cancellingId === apt.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <XCircle className="h-3 w-3" />} Cancel
                       </Button>
                     </div>
                   )}

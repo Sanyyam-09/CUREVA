@@ -9,6 +9,7 @@ import LanguageSelector from "@/components/LanguageSelector";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "@/hooks/useTranslation";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
 const Navbar = () => {
@@ -17,7 +18,21 @@ const Navbar = () => {
   const { user, signOut } = useAuth();
   const t = useTranslation();
   const location = useLocation();
+  const { toast } = useToast();
+  const [signingOut, setSigningOut] = useState(false);
   const [profile, setProfile] = useState<{ avatar_url: string | null; full_name: string | null } | null>(null);
+
+  const handleSignOut = async () => {
+    setSigningOut(true);
+    try {
+      await signOut();
+      toast({ title: "Signed out" });
+    } catch (e: any) {
+      toast({ title: "Sign out failed", description: e?.message, variant: "destructive" });
+    }
+    setSigningOut(false);
+    setMobileOpen(false);
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -90,7 +105,7 @@ const Navbar = () => {
                   </Avatar>
                 </Link>
                 <Button variant="ghost" size="sm" asChild><Link to="/dashboard">{t("nav.dashboard")}</Link></Button>
-                <Button variant="outline" size="sm" onClick={() => signOut()}>{t("nav.logout")}</Button>
+                <Button variant="outline" size="sm" onClick={handleSignOut} disabled={signingOut}>{signingOut ? "Signing out..." : t("nav.logout")}</Button>
               </>
             ) : (
               <>
@@ -179,7 +194,7 @@ const Navbar = () => {
                   <Button variant="ghost" size="sm" className="flex-1" asChild>
                     <Link to="/dashboard" onClick={() => setMobileOpen(false)}>{t("nav.dashboard")}</Link>
                   </Button>
-                  <Button variant="outline" size="sm" className="flex-1" onClick={() => { signOut(); setMobileOpen(false); }}>{t("nav.logout")}</Button>
+                  <Button variant="outline" size="sm" className="flex-1" onClick={handleSignOut} disabled={signingOut}>{signingOut ? "Signing out..." : t("nav.logout")}</Button>
                 </>
               ) : (
                 <>

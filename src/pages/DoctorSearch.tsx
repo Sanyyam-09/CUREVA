@@ -22,33 +22,39 @@ const DoctorSearch = () => {
   const [specialty, setSpecialty] = useState("all");
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const [newReview, setNewReview] = useState({ rating: 5, text: "" });
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [loadingDoctors, setLoadingDoctors] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
     const fetchDoctors = async () => {
-      const { data } = await supabase.from("doctors").select("*").order("rating", { ascending: false });
+      const { data, error } = await supabase.from("doctors").select("*").order("rating", { ascending: false });
+      if (error) toast({ title: "Failed to load doctors", description: error.message, variant: "destructive" });
       if (data) setDoctors(data);
+      setLoadingDoctors(false);
     };
     fetchDoctors();
   }, []);
 
   const fetchReviews = async (doctorId: string) => {
-    const { data } = await supabase.from("doctor_reviews").select("*").eq("doctor_id", doctorId).order("created_at", { ascending: false });
+    const { data, error } = await supabase.from("doctor_reviews").select("*").eq("doctor_id", doctorId).order("created_at", { ascending: false });
+    if (error) { toast({ title: "Failed to load reviews", description: error.message, variant: "destructive" }); return; }
     if (data) setReviews((prev) => ({ ...prev, [doctorId]: data }));
   };
 
   const submitReview = async (doctorId: string) => {
     if (!user) { toast({ title: "Please login to submit a review", variant: "destructive" }); return; }
+    if (!newReview.text.trim()) { toast({ title: "Please write a review", variant: "destructive" }); return; }
+    setSubmittingReview(true);
     const { error } = await supabase.from("doctor_reviews").insert({
-      doctor_id: doctorId, user_id: user.id, rating: newReview.rating, review_text: newReview.text,
+      doctor_id: doctorId, user_id: user.id, rating: newReview.rating, review_text: newReview.text.trim(),
     });
-    if (error) toast({ title: "Error submitting review", variant: "destructive" });
-    else {
-      toast({ title: "Review submitted!" });
-      setNewReview({ rating: 5, text: "" });
-      fetchReviews(doctorId);
-    }
+    setSubmittingReview(false);
+    if (error) { toast({ title: "Error submitting review", description: error.message, variant: "destructive" }); return; }
+    toast({ title: "Review submitted!" });
+    setNewReview({ rating: 5, text: "" });
+    fetchReviews(doctorId);
   };
 
   const specialties = [...new Set(doctors.map((d) => d.specialty))];
@@ -81,6 +87,11 @@ const DoctorSearch = () => {
           </Select>
         </div>
 
+        {loadingDoctors ? (
+          <div className="text-center py-20 text-muted-foreground">Loading doctors...</div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-20 text-muted-foreground">No doctors match your search.</div>
+        ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filtered.map((doc, index) => (
             <motion.div key={doc.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }}
@@ -122,7 +133,7 @@ const DoctorSearch = () => {
               </div>
 
               <div className="mt-4 flex gap-2">
-                <Button size="sm" className="flex-1" onClick={() => navigate("/book-appointment")}>Book Appointment</Button>
+                <Button size="sm" className="flex-1" onClick={() => navigate(`/book-appointment?doctor=${doc.id}`)}>Book Appointment</Button>
                 <Button size="sm" variant="outline" className="gap-1" onClick={() => navigate("/video-consultation")}><Video className="h-3.5 w-3.5" />Video</Button>
                 <Dialog>
                   <DialogTrigger asChild>
@@ -147,7 +158,7 @@ const DoctorSearch = () => {
                             ))}
                           </div>
                           <Textarea placeholder="Share your experience..." value={newReview.text} onChange={(e) => setNewReview((r) => ({ ...r, text: e.target.value }))} />
-                          <Button size="sm" onClick={() => submitReview(doc.id)}>Submit Review</Button>
+                          <Button size="sm" onClick={() => submitReview(doc.id)} disabled={submittingReview}>{submittingReview ? "Submitting..." : "Submit Review"}</Button>
                         </div>
                       )}
                       {/* Reviews list */}
@@ -173,6 +184,7 @@ const DoctorSearch = () => {
             </motion.div>
           ))}
         </div>
+        )}
       </motion.div>
       <Footer />
     </div>

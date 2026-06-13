@@ -105,7 +105,7 @@ const Navbar = () => {
                   </Avatar>
                 </Link>
                 <Button variant="ghost" size="sm" asChild><Link to="/dashboard">{t("nav.dashboard")}</Link></Button>
-                <Button variant="outline" size="sm" onClick={() => signOut()}>{t("nav.logout")}</Button>
+                <Button variant="outline" size="sm" onClick={handleSignOut} disabled={signingOut}>{signingOut ? "Signing out..." : t("nav.logout")}</Button>
               </>
             ) : (
               <>

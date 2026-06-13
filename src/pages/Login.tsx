@@ -43,12 +43,15 @@ const Login = () => {
   };
 
   const handleSocialLogin = async (provider: "google" | "apple") => {
+    setSocialLoading(provider);
     const { error } = await lovable.auth.signInWithOAuth(provider, {
       redirect_uri: window.location.origin,
     });
     if (error) {
+      setSocialLoading(null);
       toast({ title: `${provider} login failed`, description: String(error), variant: "destructive" });
     }
+    // On success, the browser redirects away — no need to clear loading.
   };
 
   return (

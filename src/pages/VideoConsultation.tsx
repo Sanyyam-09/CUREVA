@@ -42,15 +42,23 @@ const VideoConsultation = () => {
 
   const joinCall = async (apt: Appointment) => {
     if (!user) return;
+    setJoiningId(apt.id);
     const roomName = `cureva-${apt.id}`;
     const url = `https://meet.jit.si/${roomName}`;
-    setActiveRoom({ url, appointmentId: apt.id });
-    await supabase.from("video_consultations").insert({
+    const { error } = await supabase.from("video_consultations").insert({
       appointment_id: apt.id,
       user_id: user.id,
       room_url: url,
       started_at: new Date().toISOString(),
     });
+    setJoiningId(null);
+    if (error) {
+      toast({ title: "Couldn't log consultation", description: error.message, variant: "destructive" });
+      // still open room so doctor/patient can talk
+    } else {
+      toast({ title: "Joining call..." });
+    }
+    setActiveRoom({ url, appointmentId: apt.id });
   };
 
   const endCall = async () => {

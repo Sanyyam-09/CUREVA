@@ -29,28 +29,32 @@ const DoctorSearch = () => {
 
   useEffect(() => {
     const fetchDoctors = async () => {
-      const { data } = await supabase.from("doctors").select("*").order("rating", { ascending: false });
+      const { data, error } = await supabase.from("doctors").select("*").order("rating", { ascending: false });
+      if (error) toast({ title: "Failed to load doctors", description: error.message, variant: "destructive" });
       if (data) setDoctors(data);
+      setLoadingDoctors(false);
     };
     fetchDoctors();
   }, []);
 
   const fetchReviews = async (doctorId: string) => {
-    const { data } = await supabase.from("doctor_reviews").select("*").eq("doctor_id", doctorId).order("created_at", { ascending: false });
+    const { data, error } = await supabase.from("doctor_reviews").select("*").eq("doctor_id", doctorId).order("created_at", { ascending: false });
+    if (error) { toast({ title: "Failed to load reviews", description: error.message, variant: "destructive" }); return; }
     if (data) setReviews((prev) => ({ ...prev, [doctorId]: data }));
   };
 
   const submitReview = async (doctorId: string) => {
     if (!user) { toast({ title: "Please login to submit a review", variant: "destructive" }); return; }
+    if (!newReview.text.trim()) { toast({ title: "Please write a review", variant: "destructive" }); return; }
+    setSubmittingReview(true);
     const { error } = await supabase.from("doctor_reviews").insert({
-      doctor_id: doctorId, user_id: user.id, rating: newReview.rating, review_text: newReview.text,
+      doctor_id: doctorId, user_id: user.id, rating: newReview.rating, review_text: newReview.text.trim(),
     });
-    if (error) toast({ title: "Error submitting review", variant: "destructive" });
-    else {
-      toast({ title: "Review submitted!" });
-      setNewReview({ rating: 5, text: "" });
-      fetchReviews(doctorId);
-    }
+    setSubmittingReview(false);
+    if (error) { toast({ title: "Error submitting review", description: error.message, variant: "destructive" }); return; }
+    toast({ title: "Review submitted!" });
+    setNewReview({ rating: 5, text: "" });
+    fetchReviews(doctorId);
   };
 
   const specialties = [...new Set(doctors.map((d) => d.specialty))];

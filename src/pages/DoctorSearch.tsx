@@ -22,6 +22,8 @@ const DoctorSearch = () => {
   const [specialty, setSpecialty] = useState("all");
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const [newReview, setNewReview] = useState({ rating: 5, text: "" });
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [loadingDoctors, setLoadingDoctors] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
 

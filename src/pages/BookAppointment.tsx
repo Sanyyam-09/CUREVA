@@ -155,7 +155,9 @@ const BookAppointment = () => {
               </div>
             </div>
 
-            <Button className="w-full" size="lg" onClick={handleBook}>{t("booking.confirm")}</Button>
+            <Button className="w-full" size="lg" onClick={handleBook} disabled={booking}>
+              {booking ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Booking...</> : t("booking.confirm")}
+            </Button>
           </div>
         )}
 

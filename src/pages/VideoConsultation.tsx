@@ -63,8 +63,10 @@ const VideoConsultation = () => {
 
   const endCall = async () => {
     if (activeRoom) {
-      await supabase.from("video_consultations").update({ ended_at: new Date().toISOString() })
+      const { error } = await supabase.from("video_consultations").update({ ended_at: new Date().toISOString() })
         .eq("appointment_id", activeRoom.appointmentId).is("ended_at", null);
+      if (error) toast({ title: "Couldn't log end time", description: error.message, variant: "destructive" });
+      else toast({ title: "Call ended" });
     }
     setActiveRoom(null);
   };

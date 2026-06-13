@@ -87,6 +87,11 @@ const DoctorSearch = () => {
           </Select>
         </div>
 
+        {loadingDoctors ? (
+          <div className="text-center py-20 text-muted-foreground">Loading doctors...</div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-20 text-muted-foreground">No doctors match your search.</div>
+        ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filtered.map((doc, index) => (
             <motion.div key={doc.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }}

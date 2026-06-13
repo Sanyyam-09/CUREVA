@@ -194,7 +194,7 @@ const Navbar = () => {
                   <Button variant="ghost" size="sm" className="flex-1" asChild>
                     <Link to="/dashboard" onClick={() => setMobileOpen(false)}>{t("nav.dashboard")}</Link>
                   </Button>
-                  <Button variant="outline" size="sm" className="flex-1" onClick={() => { signOut(); setMobileOpen(false); }}>{t("nav.logout")}</Button>
+                  <Button variant="outline" size="sm" className="flex-1" onClick={handleSignOut} disabled={signingOut}>{signingOut ? "Signing out..." : t("nav.logout")}</Button>
                 </>
               ) : (
                 <>

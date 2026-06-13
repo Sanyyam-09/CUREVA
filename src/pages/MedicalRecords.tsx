@@ -67,15 +67,28 @@ const MedicalRecords = () => {
   };
 
   const handleDelete = async (record: any) => {
-    await supabase.storage.from("medical-records").remove([record.file_url]);
-    await supabase.from("medical_records").delete().eq("id", record.id);
+    if (!window.confirm(`Delete "${record.file_name}"? This cannot be undone.`)) return;
+    setDeletingId(record.id);
+    const { error: sErr } = await supabase.storage.from("medical-records").remove([record.file_url]);
+    const { error: dErr } = await supabase.from("medical_records").delete().eq("id", record.id);
+    setDeletingId(null);
+    if (sErr || dErr) {
+      toast({ title: "Delete failed", description: (sErr || dErr)?.message, variant: "destructive" });
+      return;
+    }
     fetchRecords();
     toast({ title: "Record deleted" });
   };
 
   const handleView = async (record: any) => {
-    const { data } = await supabase.storage.from("medical-records").createSignedUrl(record.file_url, 3600);
-    if (data?.signedUrl) window.open(data.signedUrl, "_blank");
+    setViewingId(record.id);
+    const { data, error } = await supabase.storage.from("medical-records").createSignedUrl(record.file_url, 3600);
+    setViewingId(null);
+    if (error || !data?.signedUrl) {
+      toast({ title: "Couldn't open file", description: error?.message ?? "No signed URL", variant: "destructive" });
+      return;
+    }
+    window.open(data.signedUrl, "_blank");
   };
 
   return (

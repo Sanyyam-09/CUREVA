@@ -184,6 +184,7 @@ const DoctorSearch = () => {
             </motion.div>
           ))}
         </div>
+        )}
       </motion.div>
       <Footer />
     </div>

@@ -21,6 +21,7 @@ const VideoConsultation = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeRoom, setActiveRoom] = useState<{ url: string; appointmentId: string } | null>(null);
+  const [joiningId, setJoiningId] = useState<string | null>(null);
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();

@@ -13,6 +13,8 @@ const recordTypes = ["Lab Report", "Prescription", "X-Ray", "Diagnostic", "Disch
 const MedicalRecords = () => {
   const [records, setRecords] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [viewingId, setViewingId] = useState<string | null>(null);
   const [recordType, setRecordType] = useState("Lab Report");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();

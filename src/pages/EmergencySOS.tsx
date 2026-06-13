@@ -166,8 +166,8 @@ const EmergencySOS = () => {
                       <Phone className="h-4 w-4" /> Call 112
                     </Button>
                   </a>
-                  <Button variant="outline" className="flex-1" onClick={() => { setActivated(false); setLocation(null); }}>
-                    Cancel SOS
+                  <Button variant="outline" className="flex-1" onClick={cancelSOS} disabled={cancelling}>
+                    {cancelling ? <Loader2 className="h-4 w-4 animate-spin" /> : "Cancel SOS"}
                   </Button>
                 </div>
               </motion.div>

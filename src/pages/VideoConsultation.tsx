@@ -130,8 +130,9 @@ const VideoConsultation = () => {
                 <h3 className="font-semibold">{apt.doctors?.name || "Doctor"}</h3>
                 <p className="text-xs text-muted-foreground">{apt.doctors?.specialty}</p>
                 <p className="text-sm mt-3">{format(new Date(apt.appointment_date), "PPP")} · {apt.time_slot}</p>
-                <Button className="w-full mt-4 gap-2" onClick={() => joinCall(apt)}>
-                  <Video className="h-4 w-4" />Join call
+                <Button className="w-full mt-4 gap-2" onClick={() => joinCall(apt)} disabled={joiningId === apt.id}>
+                  {joiningId === apt.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Video className="h-4 w-4" />}
+                  {joiningId === apt.id ? "Joining..." : "Join call"}
                 </Button>
               </div>
             ))}

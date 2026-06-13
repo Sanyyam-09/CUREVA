@@ -4,24 +4,34 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const EmergencySOS = () => {
   const [activated, setActivated] = useState(false);
   const [locating, setLocating] = useState(false);
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [eventId, setEventId] = useState<string | null>(null);
+  const [cancelling, setCancelling] = useState(false);
   const { user } = useAuth();
+  const { toast } = useToast();
 
   const logSOS = async (lat?: number, lng?: number) => {
     try {
-      const { supabase } = await import("@/integrations/supabase/client");
-      await supabase.from("sos_events").insert({
+      const { data, error } = await supabase.from("sos_events").insert({
         user_id: user?.id ?? null,
         lat: lat ?? null,
         lng: lng ?? null,
         status: "triggered",
-      });
-    } catch (e) {
-      console.error("SOS log failed", e);
+      }).select("id").maybeSingle();
+      if (error) {
+        toast({ title: "SOS log failed", description: error.message, variant: "destructive" });
+        return;
+      }
+      if (data?.id) setEventId(data.id);
+      toast({ title: "SOS triggered", description: "Emergency services have been notified." });
+    } catch (e: any) {
+      toast({ title: "SOS log failed", description: e?.message ?? "Unknown error", variant: "destructive" });
     }
   };
 
@@ -39,6 +49,7 @@ const EmergencySOS = () => {
         () => {
           setLocating(false);
           setActivated(true);
+          toast({ title: "Couldn't get GPS", description: "Triggering SOS without location.", variant: "destructive" });
           logSOS();
         },
         { enableHighAccuracy: true, timeout: 10000 }
@@ -48,6 +59,19 @@ const EmergencySOS = () => {
       setActivated(true);
       logSOS();
     }
+  };
+
+  const cancelSOS = async () => {
+    setCancelling(true);
+    if (eventId) {
+      const { error } = await supabase.from("sos_events").update({ status: "cancelled" }).eq("id", eventId);
+      if (error) toast({ title: "Failed to cancel SOS record", description: error.message, variant: "destructive" });
+      else toast({ title: "SOS cancelled" });
+    }
+    setCancelling(false);
+    setActivated(false);
+    setLocation(null);
+    setEventId(null);
   };
 
   return (

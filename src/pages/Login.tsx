@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { lovable } from "@/integrations/lovable/index";
+import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -16,6 +17,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState<"google" | "apple" | null>(null);
+  const [showResend, setShowResend] = useState(false);
+  const [resending, setResending] = useState(false);
   const { toast } = useToast();
   const { signIn, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -35,10 +38,33 @@ const Login = () => {
     const { error } = await signIn(email, password);
     setLoading(false);
     if (error) {
-      toast({ title: "Login failed", description: error.message, variant: "destructive" });
+      const msg = error.message || "";
+      const unconfirmed = /confirm|not confirmed|verify/i.test(msg) || /invalid login credentials/i.test(msg);
+      setShowResend(unconfirmed && !!email);
+      toast({ title: "Login failed", description: msg, variant: "destructive" });
     } else {
+      setShowResend(false);
       toast({ title: "Login successful!" });
       navigate("/dashboard");
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    if (!email) {
+      toast({ title: "Enter your email first", variant: "destructive" });
+      return;
+    }
+    setResending(true);
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+    });
+    setResending(false);
+    if (error) {
+      toast({ title: "Could not resend", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Confirmation email sent", description: `Check ${email} for the confirmation link.` });
     }
   };
 
@@ -121,6 +147,18 @@ const Login = () => {
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? "Signing in..." : "Sign In"}
               </Button>
+
+              {showResend && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleResendConfirmation}
+                  disabled={resending}
+                >
+                  {resending ? "Sending…" : "Resend confirmation email"}
+                </Button>
+              )}
             </form>
 
             <div className="mt-6 text-center text-sm text-muted-foreground">

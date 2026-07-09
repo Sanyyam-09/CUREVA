@@ -147,6 +147,18 @@ const Login = () => {
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? "Signing in..." : "Sign In"}
               </Button>
+
+              {showResend && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleResendConfirmation}
+                  disabled={resending}
+                >
+                  {resending ? "Sending…" : "Resend confirmation email"}
+                </Button>
+              )}
             </form>
 
             <div className="mt-6 text-center text-sm text-muted-foreground">

@@ -38,10 +38,33 @@ const Login = () => {
     const { error } = await signIn(email, password);
     setLoading(false);
     if (error) {
-      toast({ title: "Login failed", description: error.message, variant: "destructive" });
+      const msg = error.message || "";
+      const unconfirmed = /confirm|not confirmed|verify/i.test(msg) || /invalid login credentials/i.test(msg);
+      setShowResend(unconfirmed && !!email);
+      toast({ title: "Login failed", description: msg, variant: "destructive" });
     } else {
+      setShowResend(false);
       toast({ title: "Login successful!" });
       navigate("/dashboard");
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    if (!email) {
+      toast({ title: "Enter your email first", variant: "destructive" });
+      return;
+    }
+    setResending(true);
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+    });
+    setResending(false);
+    if (error) {
+      toast({ title: "Could not resend", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Confirmation email sent", description: `Check ${email} for the confirmation link.` });
     }
   };
 

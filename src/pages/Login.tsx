@@ -17,6 +17,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState<"google" | "apple" | null>(null);
+  const [showResend, setShowResend] = useState(false);
+  const [resending, setResending] = useState(false);
   const { toast } = useToast();
   const { signIn, user, loading: authLoading } = useAuth();
   const navigate = useNavigate();

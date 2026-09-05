@@ -203,8 +203,8 @@ const AdminDashboard = () => {
         );
       case "doctors": return <ResourceManager table="doctors" title="Doctors" fields={doctorsFields}
         columns={[{ key: "name", label: "Name" }, { key: "specialty", label: "Specialty" }, { key: "city", label: "City" }, { key: "consultation_fee", label: "Fee" }]} />;
-      case "hospitals": return <ResourceManager table="hospitals" title="Hospitals" fields={hospitalsFields}
-        columns={[{ key: "name", label: "Name" }, { key: "city", label: "City" }, { key: "rating", label: "Rating" }, { key: "trust_score", label: "Trust" }]} />;
+      case "hospitals": return <ResourceManager table="hospitals" title="Hospitals, Clinics & Labs" fields={hospitalsFields}
+        columns={[{ key: "name", label: "Name" }, { key: "facility_type", label: "Type" }, { key: "location", label: "Address" }, { key: "phone", label: "Phone" }, { key: "city", label: "City" }]} />;
       case "pricing": return <ResourceManager table="procedure_pricing" title="Procedure Pricing" fields={pricingFields}
         columns={[{ key: "procedure_name", label: "Procedure" }, { key: "category", label: "Category" }, { key: "base_price", label: "Base" }, { key: "total_estimate", label: "Total" }]} />;
       case "schemes": return <ResourceManager table="government_schemes" title="Schemes" fields={schemeFields}

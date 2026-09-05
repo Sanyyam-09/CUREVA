@@ -35,15 +35,38 @@ const Login = () => {
       return;
     }
     setLoading(true);
+    setShowResend(false);
     const { error } = await signIn(email, password);
     setLoading(false);
     if (error) {
       const msg = error.message || "";
-      const unconfirmed = /confirm|not confirmed|verify/i.test(msg) || /invalid login credentials/i.test(msg);
-      setShowResend(unconfirmed && !!email);
-      toast({ title: "Login failed", description: msg, variant: "destructive" });
+      const code = (error as any)?.code || (error as any)?.status ?? "";
+      // Unconfirmed-account indicators (exact matches only — wrong-password
+      // errors like "Invalid login credentials" must NOT trigger this path).
+      const isUnconfirmed =
+        /email_not_confirmed/i.test(String(code)) ||
+        /not confirmed|not verified|verify your email|email not verified/i.test(msg);
+      // Heuristic fallback: if signup requires confirmation and the credentials
+      // are otherwise valid, Supabase sometimes returns a generic message.
+      const looksLikeAuthIssue = /invalid login credentials/i.test(msg);
+      if (isUnconfirmed) {
+        setShowResend(!!email);
+        toast({
+          title: "Email not confirmed",
+          description: "Your account exists but isn't verified. Resend the confirmation email and click the link to activate it.",
+          variant: "destructive",
+        });
+      } else if (looksLikeAuthIssue) {
+        // Wrong password / no such user — do NOT offer resend (it would mislead).
+        toast({
+          title: "Login failed",
+          description: "Email or password is incorrect. If you haven't registered, create an account first.",
+          variant: "destructive",
+        });
+      } else {
+        toast({ title: "Login failed", description: msg, variant: "destructive" });
+      }
     } else {
-      setShowResend(false);
       toast({ title: "Login successful!" });
       navigate("/dashboard");
     }

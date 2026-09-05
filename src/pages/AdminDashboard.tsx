@@ -45,10 +45,16 @@ const doctorsFields: FieldDef[] = [
 ];
 
 const hospitalsFields: FieldDef[] = [
-  { name: "name", label: "Name", required: true },
+  { name: "name", label: "Name", required: true, placeholder: "e.g. Apollo Hospital Chennai" },
+  { name: "facility_type", label: "Type (hospital / clinic / lab)", placeholder: "hospital" },
+  { name: "address", label: "Street address", placeholder: "21 Greams Lane, Off Greams Road" },
   { name: "city", label: "City" },
   { name: "state", label: "State" },
-  { name: "location", label: "Location/Address" },
+  { name: "pin_code", label: "PIN code", placeholder: "600006" },
+  { name: "phone", label: "Phone", placeholder: "044-28296000" },
+  { name: "website", label: "Website" },
+  { name: "map_url", label: "Map link" },
+  { name: "location", label: "Full display address" },
   { name: "accreditation", label: "Accreditation" },
   { name: "description", label: "Description", type: "textarea" },
   { name: "image_url", label: "Image URL" },

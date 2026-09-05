@@ -64,6 +64,7 @@ const DoctorRegister = () => {
     if (authData.user) {
       const initials = form.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
       const { error: docErr } = await supabase.from("doctors").insert({
+        user_id: authData.user.id,
         name: form.name,
         specialty: form.specialty,
         qualification: form.qualification,

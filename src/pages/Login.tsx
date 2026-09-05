@@ -40,7 +40,7 @@ const Login = () => {
     setLoading(false);
     if (error) {
       const msg = error.message || "";
-      const code = (error as any)?.code || (error as any)?.status ?? "";
+      const code = (error as any)?.code ?? ((error as any)?.status ?? "");
       // Unconfirmed-account indicators (exact matches only — wrong-password
       // errors like "Invalid login credentials" must NOT trigger this path).
       const isUnconfirmed =

@@ -19,7 +19,7 @@ type TabId =
 const tabs: { id: TabId; label: string; icon: any }[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
   { id: "doctors", label: "Doctors", icon: Stethoscope },
-  { id: "hospitals", label: "Hospitals", icon: Building2 },
+  { id: "hospitals", label: "Hospitals, Clinics & Labs", icon: Building2 },
   { id: "pricing", label: "Procedure Pricing", icon: FileText },
   { id: "schemes", label: "Gov Schemes", icon: ShieldCheck },
   { id: "ngos", label: "NGO Services", icon: Users },
@@ -45,10 +45,16 @@ const doctorsFields: FieldDef[] = [
 ];
 
 const hospitalsFields: FieldDef[] = [
-  { name: "name", label: "Name", required: true },
+  { name: "name", label: "Name", required: true, placeholder: "e.g. Apollo Hospital Chennai" },
+  { name: "facility_type", label: "Type (hospital / clinic / lab)", placeholder: "hospital" },
+  { name: "address", label: "Street address", placeholder: "21 Greams Lane, Off Greams Road" },
   { name: "city", label: "City" },
   { name: "state", label: "State" },
-  { name: "location", label: "Location/Address" },
+  { name: "pin_code", label: "PIN code", placeholder: "600006" },
+  { name: "phone", label: "Phone", placeholder: "044-28296000" },
+  { name: "website", label: "Website" },
+  { name: "map_url", label: "Map link" },
+  { name: "location", label: "Full display address" },
   { name: "accreditation", label: "Accreditation" },
   { name: "description", label: "Description", type: "textarea" },
   { name: "image_url", label: "Image URL" },
@@ -197,8 +203,8 @@ const AdminDashboard = () => {
         );
       case "doctors": return <ResourceManager table="doctors" title="Doctors" fields={doctorsFields}
         columns={[{ key: "name", label: "Name" }, { key: "specialty", label: "Specialty" }, { key: "city", label: "City" }, { key: "consultation_fee", label: "Fee" }]} />;
-      case "hospitals": return <ResourceManager table="hospitals" title="Hospitals" fields={hospitalsFields}
-        columns={[{ key: "name", label: "Name" }, { key: "city", label: "City" }, { key: "rating", label: "Rating" }, { key: "trust_score", label: "Trust" }]} />;
+      case "hospitals": return <ResourceManager table="hospitals" title="Hospitals, Clinics & Labs" fields={hospitalsFields}
+        columns={[{ key: "name", label: "Name" }, { key: "facility_type", label: "Type" }, { key: "location", label: "Address" }, { key: "phone", label: "Phone" }, { key: "city", label: "City" }]} />;
       case "pricing": return <ResourceManager table="procedure_pricing" title="Procedure Pricing" fields={pricingFields}
         columns={[{ key: "procedure_name", label: "Procedure" }, { key: "category", label: "Category" }, { key: "base_price", label: "Base" }, { key: "total_estimate", label: "Total" }]} />;
       case "schemes": return <ResourceManager table="government_schemes" title="Schemes" fields={schemeFields}

@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.4"
+    PostgrestVersion: "14.5"
   }
   public: {
     Tables: {
@@ -114,6 +114,57 @@ export type Database = {
           },
         ]
       }
+      doctor_slots: {
+        Row: {
+          appointment_id: string | null
+          created_at: string
+          doctor_id: string
+          id: string
+          is_booked: boolean
+          notes: string | null
+          slot_date: string
+          time_slot: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_id?: string | null
+          created_at?: string
+          doctor_id: string
+          id?: string
+          is_booked?: boolean
+          notes?: string | null
+          slot_date: string
+          time_slot: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_id?: string | null
+          created_at?: string
+          doctor_id?: string
+          id?: string
+          is_booked?: boolean
+          notes?: string | null
+          slot_date?: string
+          time_slot?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "doctor_slots_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "doctor_slots_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       doctors: {
         Row: {
           available: boolean | null
@@ -136,6 +187,7 @@ export type Database = {
           state: string | null
           total_reviews: number | null
           trust_score: number | null
+          user_id: string | null
         }
         Insert: {
           available?: boolean | null
@@ -158,6 +210,7 @@ export type Database = {
           state?: string | null
           total_reviews?: number | null
           trust_score?: number | null
+          user_id?: string | null
         }
         Update: {
           available?: boolean | null
@@ -180,6 +233,7 @@ export type Database = {
           state?: string | null
           total_reviews?: number | null
           trust_score?: number | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -308,51 +362,69 @@ export type Database = {
       hospitals: {
         Row: {
           accreditation: string | null
+          address: string | null
           certificate_verified: boolean | null
           city: string | null
           created_at: string
           description: string | null
+          facility_type: string
           id: string
           image_url: string | null
           location: string | null
+          map_url: string | null
           name: string
           offers: string[] | null
+          phone: string | null
+          pin_code: string | null
           rating: number | null
           state: string | null
           total_reviews: number | null
           trust_score: number | null
+          website: string | null
         }
         Insert: {
           accreditation?: string | null
+          address?: string | null
           certificate_verified?: boolean | null
           city?: string | null
           created_at?: string
           description?: string | null
+          facility_type?: string
           id?: string
           image_url?: string | null
           location?: string | null
+          map_url?: string | null
           name: string
           offers?: string[] | null
+          phone?: string | null
+          pin_code?: string | null
           rating?: number | null
           state?: string | null
           total_reviews?: number | null
           trust_score?: number | null
+          website?: string | null
         }
         Update: {
           accreditation?: string | null
+          address?: string | null
           certificate_verified?: boolean | null
           city?: string | null
           created_at?: string
           description?: string | null
+          facility_type?: string
           id?: string
           image_url?: string | null
           location?: string | null
+          map_url?: string | null
           name?: string
           offers?: string[] | null
+          phone?: string | null
+          pin_code?: string | null
           rating?: number | null
           state?: string | null
           total_reviews?: number | null
           trust_score?: number | null
+          website?: string | null
         }
         Relationships: []
       }
@@ -898,6 +970,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      current_doctor_id: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -905,6 +978,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_doctor_owner: { Args: { _doctor_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "doctor" | "patient"

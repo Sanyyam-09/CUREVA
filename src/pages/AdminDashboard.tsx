@@ -19,7 +19,7 @@ type TabId =
 const tabs: { id: TabId; label: string; icon: any }[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
   { id: "doctors", label: "Doctors", icon: Stethoscope },
-  { id: "hospitals", label: "Hospitals", icon: Building2 },
+  { id: "hospitals", label: "Hospitals, Clinics & Labs", icon: Building2 },
   { id: "pricing", label: "Procedure Pricing", icon: FileText },
   { id: "schemes", label: "Gov Schemes", icon: ShieldCheck },
   { id: "ngos", label: "NGO Services", icon: Users },

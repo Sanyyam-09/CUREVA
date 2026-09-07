@@ -33,6 +33,7 @@ import BookAppointment from "./pages/BookAppointment";
 import DoctorRegister from "./pages/DoctorRegister";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import PatientProfile from "./pages/PatientProfile";
+import PatientRecord from "./pages/PatientRecord";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

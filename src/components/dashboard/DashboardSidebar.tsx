@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import {
   LayoutDashboard, Stethoscope, CalendarDays, FileText, FlaskConical,
-  Pill, MapPin, Landmark, Siren, UserCircle, Brain, BookOpen, UserPlus, LogOut,
+  Pill, MapPin, Landmark, Siren, UserCircle, Brain, BookOpen, UserPlus, LogOut, HeartPulse,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { Link } from "react-router-dom";

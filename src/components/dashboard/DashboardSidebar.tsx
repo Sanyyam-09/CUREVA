@@ -25,6 +25,7 @@ const patientItems = [
   { title: "Government Schemes", url: "/government-schemes", icon: Landmark },
   { title: "Awareness Hub", url: "/health-awareness", icon: BookOpen },
   { title: "Emergency SOS", url: "/emergency", icon: Siren },
+  { title: "Patient Record", url: "/dashboard/record", icon: HeartPulse },
   { title: "Profile", url: "/dashboard/profile", icon: UserCircle },
 ];
 

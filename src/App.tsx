@@ -33,6 +33,7 @@ import BookAppointment from "./pages/BookAppointment";
 import DoctorRegister from "./pages/DoctorRegister";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import PatientProfile from "./pages/PatientProfile";
+import PatientRecord from "./pages/PatientRecord";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -67,6 +68,7 @@ const AnimatedRoutes = () => {
         <Route path="/doctor-register" element={<PageTransition><DoctorRegister /></PageTransition>} />
         <Route path="/doctor-dashboard" element={<PageTransition><DoctorDashboard /></PageTransition>} />
         <Route path="/dashboard/profile" element={<PageTransition><PatientProfile /></PageTransition>} />
+        <Route path="/dashboard/record" element={<PageTransition><PatientRecord /></PageTransition>} />
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
     </AnimatePresence>

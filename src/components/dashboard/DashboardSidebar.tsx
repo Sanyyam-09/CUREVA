@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import {
   LayoutDashboard, Stethoscope, CalendarDays, FileText, FlaskConical,
-  Pill, MapPin, Landmark, Siren, UserCircle, Brain, BookOpen, UserPlus, LogOut,
+  Pill, MapPin, Landmark, Siren, UserCircle, Brain, BookOpen, UserPlus, LogOut, HeartPulse,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { Link } from "react-router-dom";
@@ -25,6 +25,7 @@ const patientItems = [
   { title: "Government Schemes", url: "/government-schemes", icon: Landmark },
   { title: "Awareness Hub", url: "/health-awareness", icon: BookOpen },
   { title: "Emergency SOS", url: "/emergency", icon: Siren },
+  { title: "Patient Record", url: "/dashboard/record", icon: HeartPulse },
   { title: "Profile", url: "/dashboard/profile", icon: UserCircle },
 ];
 

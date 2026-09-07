@@ -676,6 +676,54 @@ export type Database = {
         }
         Relationships: []
       }
+      patients: {
+        Row: {
+          age: number | null
+          allergies: string[] | null
+          blood_group: string | null
+          chronic_conditions: string[] | null
+          created_at: string
+          current_medications: string | null
+          gender: string | null
+          id: string
+          medical_history: string | null
+          name: string
+          notes: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          age?: number | null
+          allergies?: string[] | null
+          blood_group?: string | null
+          chronic_conditions?: string[] | null
+          created_at?: string
+          current_medications?: string | null
+          gender?: string | null
+          id?: string
+          medical_history?: string | null
+          name: string
+          notes?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          age?: number | null
+          allergies?: string[] | null
+          blood_group?: string | null
+          chronic_conditions?: string[] | null
+          created_at?: string
+          current_medications?: string | null
+          gender?: string | null
+          id?: string
+          medical_history?: string | null
+          name?: string
+          notes?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       pharmacy_order_items: {
         Row: {
           created_at: string

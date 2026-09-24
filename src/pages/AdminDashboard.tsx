@@ -202,7 +202,7 @@ const AdminDashboard = () => {
           </div>
         );
       case "doctors": return <ResourceManager table="doctors" title="Doctors" fields={doctorsFields}
-        columns={[{ key: "name", label: "Name" }, { key: "specialty", label: "Specialty" }, { key: "city", label: "City" }, { key: "consultation_fee", label: "Fee" }]} />;
+        columns={[{ key: "name", label: "Name", render: (r: any) => <a href={`/doctors/${r.id}`} target="_blank" rel="noreferrer" className="text-primary hover:underline">{r.name}</a> }, { key: "specialty", label: "Specialty" }, { key: "city", label: "City" }, { key: "consultation_fee", label: "Fee" }]} />;
       case "hospitals": return <ResourceManager table="hospitals" title="Hospitals, Clinics & Labs" fields={hospitalsFields}
         columns={[{ key: "name", label: "Name" }, { key: "facility_type", label: "Type" }, { key: "location", label: "Address" }, { key: "phone", label: "Phone" }, { key: "city", label: "City" }]} />;
       case "pricing": return <ResourceManager table="procedure_pricing" title="Procedure Pricing" fields={pricingFields}

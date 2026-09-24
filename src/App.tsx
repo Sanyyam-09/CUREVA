@@ -34,6 +34,7 @@ import DoctorRegister from "./pages/DoctorRegister";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import PatientProfile from "./pages/PatientProfile";
 import PatientRecord from "./pages/PatientRecord";
+import DoctorProfile from "./pages/DoctorProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -55,6 +56,7 @@ const AnimatedRoutes = () => {
         <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
         <Route path="/dashboard/*" element={<PageTransition><Dashboard /></PageTransition>} />
         <Route path="/doctors" element={<PageTransition><DoctorSearch /></PageTransition>} />
+        <Route path="/doctors/:id" element={<PageTransition><DoctorProfile /></PageTransition>} />
         <Route path="/hospital-pricing" element={<PageTransition><HospitalPricing /></PageTransition>} />
         <Route path="/government-schemes" element={<PageTransition><GovernmentSchemes /></PageTransition>} />
         <Route path="/symptom-checker" element={<PageTransition><SymptomChecker /></PageTransition>} />

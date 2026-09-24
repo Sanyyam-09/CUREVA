@@ -36,7 +36,8 @@ const DoctorProfile = () => {
     })();
   }, [id]);
 
-  const grouped = slots.reduce<Record<string, any[]>>((a, s) => { (a[s.slot_date] ||= []).push(s); return a; }, {});
+  const toMin = (t: string) => { const m = t.match(/(\d+):(\d+)\s*(AM|PM)/i); if (!m) return 0; return ((+m[1] % 12) + (/pm/i.test(m[3]) ? 12 : 0)) * 60 + +m[2]; };
+  const grouped = [...slots].sort((a, b) => toMin(a.time_slot) - toMin(b.time_slot)).reduce<Record<string, any[]>>((a, s) => { (a[s.slot_date] ||= []).push(s); return a; }, {});
   const avg = reviews.length ? (reviews.reduce((a, r) => a + r.rating, 0) / reviews.length).toFixed(1) : doc?.rating;
 
   return (

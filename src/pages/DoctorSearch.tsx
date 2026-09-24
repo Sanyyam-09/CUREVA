@@ -107,7 +107,7 @@ const DoctorSearch = () => {
                 />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <h3 className="font-semibold text-card-foreground truncate">{doc.name}</h3>
+                    <h3 className="font-semibold text-card-foreground truncate"><button onClick={() => navigate(`/doctors/${doc.id}`)} className="hover:text-primary hover:underline text-left">{doc.name}</button></h3>
                     {doc.certificate_verified && <BadgeCheck className="h-4 w-4 text-medical-green shrink-0" />}
                   </div>
                   <p className="text-sm text-muted-foreground">{doc.specialty}</p>

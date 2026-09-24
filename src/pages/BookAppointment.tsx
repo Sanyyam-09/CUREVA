@@ -41,6 +41,10 @@ const BookAppointment = () => {
         setDoctors(data);
         const preset = searchParams.get("doctor");
         if (preset && data.find((d) => d.id === preset)) setSelectedDoctor(preset);
+        const pDate = searchParams.get("date");
+        const pTime = searchParams.get("time");
+        if (pDate) setDate(new Date(`${pDate}T00:00:00`));
+        if (pTime) setTimeSlot(pTime);
       }
     });
     if (user) fetchAppointments();
